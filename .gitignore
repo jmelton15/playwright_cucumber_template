@@ -1,0 +1,17 @@
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+jenkinsfile
+./jenkinsfile
+/jenkinsfile
+jenkinsfile/
+./Archived_Tests/
+/Archived_Tests/
+Archived_Tests/
+./BatchScripts/config.ps1
+BatchScripts/config.ps1
+./Error-Test-Results
+/Error-Test-Results
+Error-Test-Results/
