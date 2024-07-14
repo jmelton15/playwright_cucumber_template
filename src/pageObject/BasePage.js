@@ -1,8 +1,7 @@
 const { expect } = require('@playwright/test');
 const {pageFixture} = require("../hooks/pageFixture");
 const {getErrorLineNumber} = require("../../logger/errorHelpers")
-const {runJWTProcess} = require("../../JwtScripts/getJwt")
-const {combineNewlineString} = require("../../excel-converter/helper_functions/helpers");
+
 /**
  * Class for to hold all the functions that will be used by every app/test suite
  *   This avoids redundancy and allows for a centralized code location if something 
