@@ -65,11 +65,6 @@ Before(async function({pickle}) {
 AfterStep(async function({gherkinDocument,pickleStep,pickle,result}) {
     //Screenshot on failure
     if(result?.status == Status.FAILED) {
-        let failedStepLineNums = getFailedStepLineNumbers(pickleStep,gherkinDocument);
-        const featureFilepath = pickle.uri;
-        const filepathParts = featureFilepath.split("\\")
-        const featureName = filepathParts[filepathParts.length - 1]
-        const scenarioName = pickle.name;
         const image = await createScreenshot(pageFixture.page,pickle)
         await this.attach(image,"image/png");
     }
