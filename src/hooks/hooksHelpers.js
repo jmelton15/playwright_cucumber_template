@@ -28,37 +28,6 @@ async function creatVideoBuffer(page) {
     }
 }
 
-function getAppUrl(filePath) {
-    let fileNameParts = [];
-    if(filePath.includes("\\")) {
-        fileNameParts = filePath.split("\\");
-    } else [
-        fileNameParts = filePath.split("/")
-    ]
-    let fileName = fileNameParts[fileNameParts.length - 1].split(".")[0];
-
-    let url = "";
-    switch(fileName.toLowerCase()) {
-        case "dmp":
-            url = process.env.DMP_URL;
-            break;
-        case "ured":
-            url = process.env.URED_URL;
-            break;
-        case "irad_admin":
-            url = process.env.IRAD_ADMIN_URL;
-            break;
-        case "search":
-            url = process.env.SEARCH_URL;
-            break;
-        case "grants":
-            url = process.env.GRANTS_URL;
-            break;
-    }
-    return url;
-}
-
-
 /**
  * Handles session token authentication each time playwright navigates to a new route/page
  * 
@@ -159,7 +128,5 @@ module.exports = {
     parseExcelLineNums,
     sleep,
     createScreenshot,
-    creatVideoBuffer,
-    getAppUrl,
-    getSessionCookies
+    creatVideoBuffer
 }

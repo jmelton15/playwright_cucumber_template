@@ -7,7 +7,6 @@
 
 const pageFixture = {
     page:"",
-    logger:""
 }
 
 module.exports = {pageFixture}

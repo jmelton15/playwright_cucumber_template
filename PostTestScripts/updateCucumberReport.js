@@ -2,7 +2,6 @@ const fs = require('fs');
 const fsPromise = require('fs').promises;
 const path = require('path');
 const cheerio = require('cheerio');
-const {getErrorString} = require("../logger/errorHelpers");
 const {DateTime} = require("luxon");
 
 
@@ -78,7 +77,7 @@ function addLineNumsToError(lineNums,errorMessage,index) {
 }
 
 async function getCachedLineNums() {
-    const lineNumCachePath = process.env.LINE_NUM_CACHE_PATH || "./logger/failedLineCache.json"
+    const lineNumCachePath = process.env.LINE_NUM_CACHE_PATH
     try {
         const data = await fsPromise.readFile(lineNumCachePath, 'utf8');
   

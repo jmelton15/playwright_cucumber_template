@@ -7,28 +7,8 @@ function getDate() {
   return now.toFormat('MMMM d, yyyy, h:mm a z');
 }
 
-function parseAppName(url) {
-  const appNamePattern = /mil\/([^\/]+)/
-  const match = url.match(appNamePattern);
-
-  if(match && match[1]) {
-      return match[1]
-  }
-  return "test_report"
-}
-
-function getAppName() {
-  const appName = process.env.Application;
-  if(appName) {
-    return `${appName}_TEST_REPORT`;
-  }
-  return "TEST_REPORT"
-}
-
-const appName = getAppName();
-
 GenerateReport({
-  fileName:`${appName}.html`,
+  fileName:`Test.html`,
   jsonDir: "test-results/report/",
   reportPath: "test-results/report/",
   metadata: {

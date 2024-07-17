@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean:reports": "rimraf test-results && mkdirp test-results",
-    "generate:report": "node src/helper/reportGenerate.js && node ./PostTestScripts/updateCucumberReport.js",
+    "generate:report": "node src/helper/reportGenerate.js",
     "pretest": "npm run clean:reports",
     "posttest": "npm run generate:report",
     "execute:script": "cucumber-js",

@@ -1,6 +1,5 @@
 const { expect } = require('@playwright/test');
 const {pageFixture} = require("../hooks/pageFixture");
-const {getErrorLineNumber} = require("../../logger/errorHelpers")
 
 /**
  * Class for to hold all the functions that will be used by every app/test suite
@@ -14,6 +13,14 @@ exports.BasePage = class BasePage {
   constructor() {
 
   }
+
+  async printElement(selector) {
+    const ele = await pageFixture.page.locator(selector)
+    const text = await ele.innerHTML();
+    console.log(text)
+  }
+
+
 /**
  * } catch(err) {
         pageFixture.logger.createLogObject(
@@ -42,7 +49,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async clickElement(selector) {
-      await this.waitForSelector(selector)
+      
       await pageFixture.page.locator(selector).click();
   }
 
@@ -55,7 +62,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async fillFormField(selector,value) {
-    await this.waitForSelector(selector)
+    
     const element = await pageFixture.page.locator(selector);
     if(await this.isDate(element)) {
       await element.type(value);
@@ -74,7 +81,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async fillFormFieldDynamic(selector,value) {
-    await this.waitForSelector(selector)
+    
     const element = await pageFixture.page.locator(selector);
     const randomNum = Math.floor(Math.random() * 1000 + 1);
     await element.fill(`${value}${randomNum}`);
@@ -87,7 +94,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async getElementText(selector) {
-    await this.waitForSelector(selector)
+    
     return await pageFixture.page.locator(selector).innerText();
   }
 
@@ -98,7 +105,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async verifyText(selector,textToVerify) {
-    await this.waitForSelector(selector)
+    
     const element = await pageFixture.page.locator(selector);
     let elementText = await element.innerText();
     if(!elementText || elementText == "") {
@@ -108,6 +115,8 @@ exports.BasePage = class BasePage {
     if(elementText.includes("\n")) {
       const textParts = elementText.split("\n");
       joinedText = textParts.join(" ");
+    } else {
+      joinedText = elementText;
     }
     // textToVerify = textToVerify.trim();
     await expect(joinedText.toLowerCase()).toBe(textToVerify.toLowerCase());
@@ -121,7 +130,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async verifyPartialText(selector,textToVerify) {
-    await this.waitForSelector(selector)
+    
     const element = await pageFixture.page.locator(selector);
     let elementText = await element.innerText();
     if(!elementText || elementText == "") {
@@ -131,12 +140,31 @@ exports.BasePage = class BasePage {
   }
 
   /**
+   * Handles verifying the value of the background-image css property
+   * @param {string} selector  -> represents any of the following below DOM locators
+   *                            ID,Class,CSS,XPATH, etc.
+   * 
+   * @param {string} propertyName -> Name of the CSS property you are trying to verify the value of 
+   * 
+   * @param {string} value  -> value of that you would like to test against for the css property
+   */
+  async verifyBackgroundImage(selector,value) {
+    const element = await pageFixture.page.locator(selector);
+    const backgroundImage = await element.evaluate((el) => {
+      return window.getComputedStyle(el).getPropertyValue('background-image');
+    });
+    const imageUrlParts = backgroundImage.split("/")
+    const image = imageUrlParts[imageUrlParts.length-1]
+    await expect(image).toContain(value);
+  }
+
+  /**
    *  Simple function that handles hovering over a web element
    * @param {string} selector -> represents any of the following below DOM locators
    *                            ID,Class,CSS,XPATH, etc.
    */
   async hoverOverElement(selector) {
-    await this.waitForSelector(selector);
+   
     await pageFixture.page.hover(selector);
   }
 
@@ -147,7 +175,7 @@ exports.BasePage = class BasePage {
    * @param {string} attributeName  -> represents the name of the attribute that you want to get the value of
    */
   async verifyAttribute(selector,expectedValue,attributeName) {
-    await this.waitForSelector(selector);
+   
     const attributeValue = await pageFixture.page.getAttribute(selector,attributeName);
     await expect(attributeValue.toLowerCase()).toContainText(expectedValue.toLowerCase());
   }
@@ -159,7 +187,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async verifyElementExists(selector) {
-      await this.waitForSelector(selector)
+      
       await expect(pageFixture.page.locator(selector)).toHaveCount(1);
   }
 
@@ -170,7 +198,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
     async verifyElementDoesNotExist(selector) {
-      // await this.waitForSelector(selector)
+      // 
       await expect(pageFixture.page.locator(selector)).not.toHaveCount(1);
     }
 
@@ -183,13 +211,20 @@ exports.BasePage = class BasePage {
    */
   async selectOneFromDropdown(selector,selectValue) {
     let actualValue = selectValue;
-    await this.waitForSelector(selector)
+    
     if(!actualValue) {
       actualValue = {index:2}
     }
     pageFixture.page.selectOption(selector,actualValue);
     await this.wait(3000);
   }
+
+  async selectUsingIndex(selector,index) {
+    
+    pageFixture.page.selectOption(selector,{index});
+    await this.wait(3000);
+  }
+
 
   /**
    *  Handles the logic of verifying if an html table is sorted according to ascending
@@ -204,12 +239,12 @@ exports.BasePage = class BasePage {
     // await this.wait(2000);
     columnNumber = parseInt(columnNumber);
     if(assertMethod.toLowerCase() === 'ascending') {
-      await this.waitForSelector(selector);
+     
       const isAscending = await this.verifyAscendedTable(pageFixture.page,selector,columnNumber-1);
       await expect(isAscending).toBeTruthy();
     } 
     if(assertMethod.toLowerCase() === 'descending') {
-      await this.waitForSelector(selector);
+     
       const isDescending = await this.verifyDescendedTable(pageFixture.page,selector,columnNumber-1);
       await expect(isDescending).toBeTruthy();
     } 
@@ -231,7 +266,7 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async uploadFile(selector,selectValue) {
-    await this.waitForSelector(selector)
+    
     const uploadPath = `${process.env.UPLOADS_PATH}${selectValue}`;
     const fileInput = await pageFixture.page.locator(selector);
     await fileInput.setInputFiles(uploadPath);
