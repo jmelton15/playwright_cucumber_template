@@ -21,17 +21,7 @@ exports.BasePage = class BasePage {
   }
 
 
-/**
- * } catch(err) {
-        pageFixture.logger.createLogObject(
-          {"Timestamp":pageFixture.logger.currentDatetime},
-          {"ERROR":err},
-          {"Test Method":"Go To URL"},
-          {"URL": url},
-          // {"Test Case Line Number":} 
-        )
-    }
- */
+
   /**
    * Takes in a URL in string format and calls the page.goto() method
    *  Goes to the given url in the browser
