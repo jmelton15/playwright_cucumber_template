@@ -39,7 +39,6 @@ exports.BasePage = class BasePage {
    *                            ID,Class,CSS,XPATH, etc.
    */
   async clickElement(selector) {
-      
       await pageFixture.page.locator(selector).click();
   }
 
@@ -108,7 +107,6 @@ exports.BasePage = class BasePage {
     } else {
       joinedText = elementText;
     }
-    // textToVerify = textToVerify.trim();
     await expect(joinedText.toLowerCase()).toBe(textToVerify.toLowerCase());
   }
     
